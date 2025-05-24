@@ -1,0 +1,133 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Survival AI - Home</title>
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="logo">
+        <h1>Survival<span>AI</span></h1>
+      </div>
+      <div class="nav-links">
+        <a href="{% url 'home' %}" class="active">Home</a>
+        <a href="{% url 'statistic' %}">Statistics</a>
+        <a href="{% url 'usage' %}">Usage</a>
+        <a href="{% url 'about' %}">About</a>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <h2>Master Survival with AI-Powered Insights</h2>
+      <p>Leverage cutting-edge artificial intelligence to analyze survival scenarios, predict outcomes, and optimize your survival strategies in any environment.</p>
+      <button class="cta-button">Get Started</button>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+      <h3>Why Choose Survival AI?</h3>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h4>Real-time Analytics</h4>
+          <p>Get instant analysis of survival scenarios with our advanced AI algorithms processing data in real-time.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🧠</div>
+          <h4>Predictive Modeling</h4>
+          <p>Our AI predicts potential outcomes based on environmental factors and your available resources.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌍</div>
+          <h4>Environment Adaptation</h4>
+          <p>Customized survival strategies tailored to specific environments and conditions.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h4>Survival AI</h4>
+          <p>Empowering survivalists with artificial intelligence to make better decisions in critical situations.</p>
+          <div class="social-links">
+            <a href="https://www.youtube.com/@andimath06" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://github.com/AndiAq06" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/andi-ardiansyah-7b25072a9/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'statistic' %}">Statistics</a></li>
+            <li><a href="#">AI Models</a></li>
+            <li><a href="{% url 'usage' %}">Usage Guide</a></li>
+            <li><a href="{% url 'about' %}">About Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Resources</h4>
+          <ul class="footer-links">
+            <li><a href="#">Documentation</a></li>
+            <li><a href="#">API</a></li>
+            <li><a href="#">Case Studies</a></li>
+            <li><a href="#">Research Papers</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Contact</h4>
+          <p>Email: 222111890@stis.ac.id</p>
+          <p>Phone: +62 82343757829</p>
+          <p>Address: Jakarta Timur</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Survival AI. All rights reserved. | Privacy Policy | Terms of Service</p>
+      </div>
+    </footer>
+
+    <script>
+      // Simple interactive elements
+      document.addEventListener("DOMContentLoaded", function () {
+        // Nav link active state
+        const navLinks = document.querySelectorAll(".nav-links a");
+        navLinks.forEach((link) => {
+          link.addEventListener("click", function (e) {
+            navLinks.forEach((l) => l.classList.remove("active"));
+            this.classList.add("active");
+          });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute("href")).scrollIntoView({
+              behavior: "smooth",
+            });
+          });
+        });
+
+        // CTA button animation
+        const ctaButton = document.querySelector(".cta-button");
+        if (ctaButton) {
+          ctaButton.addEventListener("mouseenter", function () {
+            this.style.transform = "translateY(-3px)";
+          });
+          ctaButton.addEventListener("mouseleave", function () {
+            this.style.transform = "translateY(0)";
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

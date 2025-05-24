@@ -1,0 +1,12 @@
+@startuml DownloadDataActivity
+|User|
+start
+:Masuk ke Menu Statistik;
+:Klik “Unduh Data”;
+if (Data tersedia?) then (ya)
+  :Data terunduh (.xlsx);
+else (tidak ada)
+  :Tampilkan pesan “Tidak ada data untuk diunduh”;
+endif
+stop
+@enduml

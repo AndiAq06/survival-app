@@ -1,0 +1,47 @@
+@startuml proses bisnis
+title Proses Bisnis Aplikasis
+
+|User|
+start
+:Input data survival;
+:Klik menu "Analisis";
+:Klik variabel checkbox;
+
+|Frontend|
+:Validasi format data;
+if (Data valid?) then (valid)
+  :Kirim data ke Backend;
+else (tidak valid)
+  :Tampilkan pesan error;
+  stop
+endif
+
+|Backend|
+:Terima data dan \nlakukan parsing;
+:Menyusun prompt \nidentifikasi distribusi;
+:Mengirim data + prompt ke LLM;
+
+|LLM|
+:Menerima data + prompt;
+:Prediksi distribusi survival;
+
+|Backend|
+:Hitung survival probability,\nmedian, AIC dan parameter;
+:Susun prompt interpretasi\n(berisi hasil analisis);
+:Kirim prompt ke LLM \n(tahap 2);
+
+|LLM|
+:Terima prompt kedua;
+:Berikan interpretasi\nhasil analisis;
+
+|Backend|
+:Terima interpretasi \ndari LLM;
+
+|Frontend|
+:Tampilkan analisis\n+ interpretasi ke user;
+
+|User|
+:Melihat Analisis dan rekomendasi;
+stop
+
+@enduml

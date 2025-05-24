@@ -1,0 +1,9 @@
+@startuml ChatAIActivity
+start
+:<b>Masuk ke halaman Home;
+:<b>Masukkan prompt;
+:<b>Kirim prompt ke model;
+:<b>Proses prompt oleh model;
+:<b>Menampilkan hasil dari model;
+stop
+@enduml

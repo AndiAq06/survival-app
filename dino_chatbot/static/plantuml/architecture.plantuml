@@ -1,0 +1,28 @@
+@startuml MVT_LLM_Component
+
+actor User
+
+rectangle "Web Application" {
+  
+  component "urls.py\n(URL Router)" as Router
+  component "View\n(Function-Based View)" as View
+  component "Model\n(LLM Handler)" as Model
+  component "Template\n(HTML Renderer)" as Template
+  
+}
+
+rectangle "External Service" {
+  component "LLM API\n(OpenAI)" as API
+}
+
+' Alur nomor
+User --> Router     : 1. Request URL
+Router --> View     : 2. Dispatch to View
+View --> Model      : 3. Call Model with prompt/data
+Model --> API       : 4. Request to LLM API
+API --> Model       : 5. Response from LLM
+Model --> View      : 6. Return processed data
+View --> Template   : 7. Render HTML with data
+Template --> User   : 8. Send Response
+
+@enduml

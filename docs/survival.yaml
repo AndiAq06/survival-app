@@ -1,0 +1,278 @@
+openapi: 3.0.3
+info:
+  title: Survival Analysis API
+  description: |
+    API for performing survival analysis and descriptive statistics calculations.
+    Includes AI-powered distribution fitting and interpretation.
+  version: 1.0.0
+  contact:
+    email: ardiansyahnasir56@gmail.com
+servers:
+  - url: https://yourdomain.com/api
+    description: Production server
+
+tags:
+  - name: Survival Analysis
+    description: Time-to-event data analysis endpoints
+  - name: Statistics
+    description: Descriptive statistics calculations
+  - name: Views
+    description: HTML rendering endpoints
+
+paths:
+  /get_survival:
+    post:
+      tags: [Survival Analysis]
+      summary: Perform survival analysis
+      description: |
+        Analyzes time-to-event data to determine survival characteristics,
+        including distribution fitting, Kaplan-Meier estimation, and
+        AI-powered interpretation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                time_to_event:
+                  type: array
+                  items:
+                    type: number
+                  description: Array of time values
+                  example: [12, 24, 36, 48, 60]
+                event_status:
+                  type: array
+                  items:
+                    type: integer
+                    enum: [0, 1]
+                  description: Array of event indicators (0=censored, 1=event)
+                  example: [1, 1, 0, 1, 0]
+              required: [time_to_event, event_status]
+      responses:
+        "200":
+          description: Successful analysis
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  predicted_distribution:
+                    type: string
+                    example: "weibull"
+                  best_distribution:
+                    type: string
+                    example: "lognormal"
+                  aic:
+                    type: number
+                    format: float
+                    example: 123.45
+                  bic:
+                    type: number
+                    format: float
+                    example: 130.67
+                  params:
+                    type: object
+                    additionalProperties:
+                      type: number
+                    example: { "shape": 1.5, "scale": 100 }
+                  best_params:
+                    type: object
+                    additionalProperties:
+                      type: number
+                    example: { "mu": 3.5, "sigma": 0.8 }
+                  hasil_uji_goodness_of_fit:
+                    type: object
+                    additionalProperties:
+                      type: number
+                    example: { "kolmogorov-smirnov": 0.12 }
+                  kaplan_meier_plot:
+                    type: string
+                    format: byte
+                    description: Base64 encoded Kaplan-Meier plot
+                  distribusi_plot:
+                    type: string
+                    format: byte
+                    description: Base64 encoded distribution plot
+                  hazard_plot:
+                    type: string
+                    format: byte
+                    description: Base64 encoded hazard function plot
+                  survival_plot:
+                    type: string
+                    format: byte
+                    description: Base64 encoded survival function plot
+                  survival_function:
+                    type: string
+                    format: byte
+                  all_distributions_results:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        aic:
+                          type: number
+                        bic:
+                          type: number
+                        params:
+                          type: object
+                  kaplan_meier:
+                    type: object
+                    properties:
+                      time:
+                        type: array
+                        items:
+                          type: number
+                      survival_prob:
+                        type: array
+                        items:
+                          type: number
+                  median_survival:
+                    type: number
+                    example: 42.5
+                  interpretation:
+                    type: string
+                    example: "The data best fits a lognormal distribution..."
+        "400":
+          description: Invalid JSON input
+        "405":
+          description: Invalid HTTP method
+        "500":
+          description: Server error during processing
+
+  /get_statistics:
+    post:
+      tags: [Statistics]
+      summary: Calculate descriptive statistics
+      description: |
+        Calculates descriptive statistics for both numeric and categorical data.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                variable:
+                  type: string
+                  description: Name of the variable
+                  example: "age"
+                data:
+                  type: array
+                  description: Array of data values
+                  items: {}
+                  example: [25, 30, 35, 40, 45]
+                isNumeric:
+                  type: boolean
+                  description: Whether data is numeric
+                  default: true
+              required: [variable, data]
+      responses:
+        "200":
+          description: Successful calculation
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/NumericStatsResponse"
+                  - $ref: "#/components/schemas/CategoricalStatsResponse"
+        "400":
+          description: Invalid input or missing fields
+        "405":
+          description: Invalid HTTP method
+
+  /:
+    get:
+      tags: [Views]
+      summary: Main index page
+      responses:
+        "200":
+          description: HTML page rendered
+
+  /about:
+    get:
+      tags: [Views]
+      summary: About page
+      responses:
+        "200":
+          description: HTML page rendered
+
+  /usage:
+    get:
+      tags: [Views]
+      summary: Usage instructions page
+      responses:
+        "200":
+          description: HTML page rendered
+
+  /statistic:
+    get:
+      tags: [Views]
+      summary: Statistics tool page
+      responses:
+        "200":
+          description: HTML page rendered
+
+components:
+  schemas:
+    NumericStatsResponse:
+      type: object
+      properties:
+        mean:
+          type: number
+          example: 35.0
+        median:
+          type: number
+          example: 35.0
+        mode:
+          type: number
+          example: 35.0
+        std_dev:
+          type: number
+          example: 7.91
+        variance:
+          type: number
+          example: 62.5
+        range:
+          type: array
+          items:
+            type: number
+          example: [25, 45]
+        iqr:
+          type: number
+          example: 10.0
+        skewness:
+          type: number
+          example: 0.0
+        kurtosis:
+          type: number
+          example: -1.3
+        percentiles:
+          type: object
+          properties:
+            "25":
+              type: number
+              example: 30.0
+            "50":
+              type: number
+              example: 35.0
+            "75":
+              type: number
+              example: 40.0
+
+    CategoricalStatsResponse:
+      type: object
+      properties:
+        counts:
+          type: object
+          additionalProperties:
+            type: integer
+          example: { "Male": 30, "Female": 25 }
+        proportions:
+          type: object
+          additionalProperties:
+            type: number
+          example: { "Male": 0.55, "Female": 0.45 }
+        mode:
+          type: string
+          example: "Male"

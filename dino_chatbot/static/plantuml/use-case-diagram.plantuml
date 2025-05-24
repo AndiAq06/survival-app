@@ -1,0 +1,62 @@
+@startuml AplikasiChatAnalisis
+
+left to right direction
+skinparam usecase {
+  BackgroundColor #E3F2FD 
+  BorderColor #1565C0      
+  ArrowColor #D32F2F       
+}
+
+skinparam usecasePadding 15
+actor User as user
+
+rectangle "Survival APP" {
+
+  usecase "Chat dengan Sistem" as chat
+  usecase "Masukkan Prompt" as input
+  usecase "Hapus Riwayat Chat" as delete
+
+  rectangle "Menu Statistik" {
+    usecase "Unggah Data" as upload
+    usecase "Hapus Data" as clear
+    usecase "Unduh Data" as download
+
+    usecase "Lihat Statistik Deskriptif" as stats
+    usecase "Estimasi Distribusi" as distribution
+    usecase "Analisis Survival" as survival
+
+    usecase "Checkbox Variabel" as pilih
+    usecase "Melihat Hasil Analisis" as hasil
+  }
+
+  usecase "Lihat Menu Usage" as usage
+  usecase "Lihat Menu About" as about
+
+  ' Chat
+  user --> chat
+  chat ..> input : <<include>>
+  chat ..> delete : <<extend>>
+
+  ' Statistik
+  user --> upload
+  user --> clear
+  user --> download
+
+  upload <.. stats : <<include>>
+  stats ..> pilih : <<include>>
+  pilih --> hasil
+
+  upload <.. distribution : <<include>>
+  distribution ..> pilih : <<include>>
+  pilih --> hasil
+
+  upload <.. survival : <<include>>
+  survival ..> pilih : <<include>>
+  pilih --> hasil
+
+  ' Menu lainnya
+  user --> usage
+  user --> about
+}
+
+@enduml

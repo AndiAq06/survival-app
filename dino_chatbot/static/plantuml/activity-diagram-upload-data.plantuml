@@ -1,0 +1,19 @@
+@startuml UploadDataActivity
+|User|
+start
+:Masuk ke Menu Statistik;
+:Klik “Upload Data”;
+
+partition InputMethod {
+  if (Dari Komputer?) then (ya)
+    :Buka dialog file;
+    :Pilih file dari komputer;
+    :Tampilkan data di Handsontable;
+  else (manual)
+    :User masukkan data ke Handsontable;
+  endif
+}
+
+:Data ditampilkan di Handsontable;
+stop
+@enduml

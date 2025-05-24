@@ -1,0 +1,19 @@
+@startuml ClearDataActivity
+|User|
+start
+:Masuk ke Menu Statistik;
+:Klik “Hapus Data”;
+if (Data tersedia?) then (ya)
+  :Tampilkan konfirmasi “Yakin hapus?”;
+  if (User konfirmasi?) then (ya)
+    :Hapus data di Handsontable;
+    :Handsontable kosong;
+  else (tidak)
+    :Batal; tetap di halaman Statistik;
+  endif
+else (tidak ada)
+  :Tampilkan pesan “Tidak ada data”;
+endif
+stop
+@enduml
+

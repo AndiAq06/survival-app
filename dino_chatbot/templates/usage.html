@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Survival AI - Usage</title>
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}" />
+    <!-- favicon -->
+    <link rel="icon" href="{% static 'images/icon.png' %}" type="image/png" sizes="128x128" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="logo">
+        <h1>Survival<span>AI</span></h1>
+      </div>
+      <div class="nav-links">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'statistic' %}">Statistics</a>
+        <a href="{% url 'usage' %}" class="active">Usage</a>
+        <a href="{% url 'about' %}">About</a>
+      </div>
+    </nav>
+
+    <h1 class="main-title">How to?</h1>
+    <hr class="title-line" />
+
+    <div class="descriptive-statistic">
+      <h3>Statistics Calculator</h3>
+      <p>Here you can easily analyse your data online. To calculate descriptive statistics such as the mean or the standard deviation, simply paste your data into the table above.</p>
+      <button class="try-button"><a href="{% url 'statistic' %}">Try it out!</a></button>
+
+      <img class="image-descriptive" src="{% static 'images/usage-1.jpg' %}" alt="usage_1" />
+      <p>- Place the variable names in the first row and use <strong>time_to_event</strong> and <strong> event_status</strong>, as my application only accepts data with these variable names. Otherwise, an error will occur.</p>
+      <img class="image-descriptive" src="{% static 'images/usage-2.jpg' %}" alt="usage_1" />
+      <img class="image-descriptive" src="{% static 'images/usage-3.jpg' %}" alt="usage_1" />
+      <img class="image-descriptive" src="{% static 'images/usage-4.jpg' %}" alt="usage_1" />
+      <img class="image-descriptive" src="{% static 'images/usage-5.jpg' %}" alt="usage_1" />
+    </div>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h4>Survival AI</h4>
+          <p>Empowering survivalists with artificial intelligence to make better decisions in critical situations.</p>
+          <div class="social-links">
+            <a href="https://www.youtube.com/@andimath06" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://github.com/AndiAq06" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/andi-ardiansyah-7b25072a9/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'statistic' %}">Statistics</a></li>
+            <li><a href="#">AI Models</a></li>
+            <li><a href="{% url 'usage' %}">Usage Guide</a></li>
+            <li><a href="{% url 'about' %}">About Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Resources</h4>
+          <ul class="footer-links">
+            <li><a href="#">Documentation</a></li>
+            <li><a href="#">API</a></li>
+            <li><a href="#">Case Studies</a></li>
+            <li><a href="#">Research Papers</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Contact</h4>
+          <p>Email: 222111890@stis.ac.id</p>
+          <p>Phone: +62 82343757829</p>
+          <p>Address: Jakarta Timur</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Survival AI. All rights reserved. | Privacy Policy | Terms of Service</p>
+      </div>
+    </footer>
+  </body>
+</html>

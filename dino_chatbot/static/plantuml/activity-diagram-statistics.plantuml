@@ -1,0 +1,18 @@
+@startuml StatisticsActivity
+start
+:Masuk ke Menu Statistics;
+:Upload Data (via file/manual);
+:Memilih jenis analisis;
+
+if (Pilih jenis?) then
+  :Descriptive Statistics;
+elseif (Pilih Distribution?) then
+  :Distribution Estimation;
+else
+  :Survival Analysis;
+endif
+
+:Checkbox variabel;
+:Menampilkan analisis (tabel/grafik);
+stop
+@enduml
