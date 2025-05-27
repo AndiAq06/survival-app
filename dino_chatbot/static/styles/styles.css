@@ -7,6 +7,7 @@
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   --transition: all 0.3s ease;
   --font: #fff;
+  --navbar: #8b9899;
 }
 
 * {
@@ -26,7 +27,7 @@ body {
 
 /* Navbar Styles */
 .navbar {
-  background: linear-gradient(135deg, var(--primary), var(--dark));
+  background: var(--navbar);
   color: white;
   padding: 1rem 2rem;
   display: flex;
@@ -51,7 +52,7 @@ body {
 }
 
 .logo span {
-  color: var(--secondary);
+  color: var(--primary);
 }
 
 .nav-links {
@@ -60,7 +61,7 @@ body {
 }
 
 .nav-links a {
-  color: white;
+  color: var(--primary);
   text-decoration: none;
   padding: 0.5rem 1rem;
   border-radius: 5px;
@@ -76,7 +77,7 @@ body {
   transform: translateX(-50%);
   width: 0;
   height: 2px;
-  background: var(--secondary);
+  background: var(--primary);
   transition: width 0.3s ease;
 }
 

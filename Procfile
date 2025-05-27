@@ -1,0 +1,1 @@
+web: gunicorn dino_gpt.wsgi
