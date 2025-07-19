@@ -570,6 +570,17 @@ export function setupSurvivalAnalysis(hot) {
         }
       </div>
 
+      <!-- Kaplan-Meier Table Section -->
+      ${
+        apiResponse.kaplan_meier
+          ? `
+        <div style="width: 90%; background-color: #ffffff; padding: 24px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); margin-bottom: 30px;">
+          ${buildKaplanMeierTable(apiResponse.kaplan_meier)}
+        </div>`
+          : ""
+      }
+
+      <!-- Interpretation Section -->
       ${
         apiResponse.interpretation
           ? `
@@ -584,18 +595,12 @@ export function setupSurvivalAnalysis(hot) {
     </div>
   `;
 
-    // 4. Append dynamic content
-    if (apiResponse.kaplan_meier) {
-      const kmTable = document.createElement("div");
-      kmTable.innerHTML = buildKaplanMeierTable(apiResponse.kaplan_meier);
-      contentContainer.appendChild(kmTable);
-    }
-
+    // Append plots section separately (if needed)
     const plotsSection = document.createElement("div");
     plotsSection.innerHTML = buildPlotsSection(apiResponse);
     contentContainer.appendChild(plotsSection);
 
-    // 5. Append everything to main container
+    // Append everything to main container
     survivalDiv.appendChild(contentContainer);
     survivalOutput.appendChild(survivalDiv);
   }
@@ -610,26 +615,16 @@ export function setupSurvivalAnalysis(hot) {
               <tr style="background-color: #f8f9fa; border-bottom: 2px solid #dee2e6;">
                 <th style="padding: 5px; text-align: left;">Time</th>
                 <th style="padding: 5px; text-align: left;">Survival Probability</th>
-                <th style="padding: 5px; text-align: left;">CI Lower</th>
-                <th style="padding: 5px; text-align: left;">CI Upper</th>
               </tr>
             </thead>
             <tbody>
     `;
 
     for (let i = 0; i < kaplanMeierData.timeline.length; i++) {
-      const ci_index = i * 2;
-      const hasCI = kaplanMeierData.confidenceInterval && ci_index + 1 < kaplanMeierData.confidenceInterval.length;
-
-      const lowerBound = hasCI ? kaplanMeierData.confidenceInterval[ci_index] : "N/A";
-      const upperBound = hasCI ? kaplanMeierData.confidenceInterval[ci_index + 1] : "N/A";
-
       tableContent += `
           <tr style="border-bottom: 1px solid #dee2e6;">
               <td style="padding: 5px;">${kaplanMeierData.timeline[i].toFixed(2)}</td>
               <td style="padding: 5px;">${kaplanMeierData.survival_function[i].toFixed(4)}</td>
-              <td style="padding: 5px;">${lowerBound !== "N/A" ? parseFloat(lowerBound).toFixed(4) : "N/A"}</td>
-              <td style="padding: 5px;">${upperBound !== "N/A" ? parseFloat(upperBound).toFixed(4) : "N/A"}</td>
           </tr>
       `;
     }

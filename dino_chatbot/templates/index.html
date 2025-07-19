@@ -4,15 +4,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Survival AI - Home</title>
+    <title>SurvDist - Home</title>
     <link rel="stylesheet" href="{% static 'styles/styles.css' %}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="shortcut icon" href="{% static 'images/icon.png' %}" type="image/x-icon" sizes="64x64" />
   </head>
   <body>
     <!-- Navbar -->
     <nav class="navbar">
       <div class="logo">
-        <h1>Survival<span>AI</span></h1>
+        <h1>SurvDist<span>AI</span></h1>
       </div>
       <div class="nav-links">
         <a href="{% url 'home' %}" class="active">Home</a>
@@ -26,12 +27,12 @@
     <section class="hero">
       <h2>Master Survival with AI-Powered Insights</h2>
       <p>Leverage cutting-edge artificial intelligence to analyze survival scenarios, predict outcomes, and optimize your survival strategies in any environment.</p>
-      <button class="cta-button">Get Started</button>
+      <button class="cta-button"><a href="{% url 'statistic' %}">Get Started</a></button>
     </section>
 
     <!-- Features Section -->
     <section class="features">
-      <h3>Why Choose Survival AI?</h3>
+      <h3>Why Choose SurvDist?</h3>
       <div class="feature-grid">
         <div class="feature-card">
           <div class="feature-icon">📊</div>
@@ -41,7 +42,7 @@
         <div class="feature-card">
           <div class="feature-icon">🧠</div>
           <h4>Predictive Modeling</h4>
-          <p>Our AI predicts potential outcomes based on environmental factors and your available resources.</p>
+          <p>Our AI predicts outcomes based on time-to-event data and event status.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🌍</div>
@@ -58,9 +59,9 @@
           <h4>Survival AI</h4>
           <p>Empowering survivalists with artificial intelligence to make better decisions in critical situations.</p>
           <div class="social-links">
-            <a href="https://www.youtube.com/@andimath06" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://www.youtube.com/@andimath06" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"> </i></a>
             <a href="https://github.com/AndiAq06" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
-            <a href="https://www.linkedin.com/in/andi-ardiansyah-7b25072a9/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.linkedin.com/in/andi-ardiansyah-7b25072a9/" target="_blank" aria-label="LinkedIn"> <i class="fab fa-linkedin-in"></i></a>
             <a href="#" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
           </div>
         </div>
@@ -77,9 +78,7 @@
         <div class="footer-column">
           <h4>Resources</h4>
           <ul class="footer-links">
-            <li><a href="https://www.figma.com/design/lXMRXIj3hx4TfzwnApImZ1/Prototipe-Survival--AI?node-id=0-1&p=f&t=FdpJZFTxuNADGm85-0">Prototype</a></li>
-            <li><a href="#">API</a></li>
-            <li><a href="#">Case Studies</a></li>
+            <li><a href="https://shorturl.at/hADbe">Prototype</a></li>
             <li><a href="#">Research Papers</a></li>
           </ul>
         </div>

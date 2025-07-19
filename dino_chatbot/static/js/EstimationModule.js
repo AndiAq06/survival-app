@@ -41,7 +41,7 @@ export function setupEstimationAnalysis(hot) {
           const data = allData
             .slice(1)
             .map((row) => row[index])
-            .filter(Boolean);
+            .filter((val) => val !== "" && val !== null && val !== undefined);
           selectedData[variable] = data;
         } else {
           console.error(`Variable ${variable} tidak ditemukan di headers`);
@@ -252,113 +252,66 @@ export function setupEstimationAnalysis(hot) {
         }
       });
 
-      // Analysis Final Section
+      // Original LLM Analysis Results
       content += `
         <div style="background-color: #f8f9fa; padding: 16px; border-radius: 8px; margin-bottom: 16px; width: 90%;">
-          <h3 style="margin-top: 0; margin-bottom: 12px; color: #2b2d42;">Statistical Analysis Final</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px;">
+          <h3 style="margin-top: 0; margin-bottom: 12px; color: #2b2d42;">Analysis Results From LLM</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
             <div style="background-color: white; padding: 12px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-              <div style="font-size: 13px; color: #6c757d; margin-bottom: 4px;">Best by AIC</div>
-              <div style="font-size: 16px; font-weight: 500;">${bestAicDist || "N/A"}</div>
-              <div style="font-size: 12px; color: #6c757d;">AIC: ${bestAicValue.toFixed(2)}</div>
+              <div style="font-size: 13px; color: #6c757d; margin-bottom: 4px;">Best Distribution</div>
+              <div style="font-size: 16px; font-weight: 500;">${apiResponse.predicted_distribution || "N/A"}</div>
             </div>
-            <div style="background-color: white; padding: 12px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-              <div style="font-size: 13px; color: #6c757d; margin-bottom: 4px;">Best by BIC</div>
-              <div style="font-size: 16px; font-weight: 500;">${bestBicDist || "N/A"}</div>
-              <div style="font-size: 12px; color: #6c757d;">BIC: ${bestBicValue.toFixed(2)}</div>
-            </div>
-            ${
-              bestAicDist === bestBicDist
-                ? `
-            <div style="background-color: #e8f5e9; padding: 12px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-              <div style="font-size: 13px; color: #2e7d32; margin-bottom: 4px;">Consensus</div>
-              <div style="font-size: 16px; font-weight: 500; color: #2e7d32;">${bestAicDist}</div>
-              <div style="font-size: 12px; color: #2e7d32;">AIC and BIC agree</div>
-            </div>
-            `
-                : `
-            <div style="background-color: #fff3e0; padding: 12px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-              <div style="font-size: 13px; color: #e65100; margin-bottom: 4px;">Note</div>
-              <div style="font-size: 14px; color: #e65100;">AIC and BIC disagree</div>
-              <div style="font-size: 12px; color: #e65100;">Consider model complexity</div>
-            </div>
-            `
-            }
-          </div>
-          <div style="margin-top: 12px; font-size: 14px; color: #495057;">
-            <p style="margin: 8px 0; font-size: 0.8rem;"><strong>AIC (Akaike Information Criterion):</strong> Favors models with better fit but penalizes complexity (lower is better).</p>
-            <p style="margin: 8px 0; font-size: 0.8rem;"><strong>BIC (Bayesian Information Criterion):</strong> Stronger penalty for complex models, better for larger datasets (lower is better).</p>
-            ${
-              bestAicDist !== bestBicDist
-                ? `
-            <p style="margin: 8px 0; color: #d32f2f;"><strong>Note:</strong> When AIC and BIC disagree, consider BIC for larger datasets as it penalizes complexity more strongly.</p>
-            `
-                : ""
-            }
           </div>
         </div>
-      `;
-    }
+    `;
 
-    // Original LLM Analysis Results
-    content += `
+      // Analysis Final Section
+      content += `
       <div style="background-color: #f8f9fa; padding: 16px; border-radius: 8px; margin-bottom: 16px; width: 90%;">
-        <h3 style="margin-top: 0; margin-bottom: 12px; color: #2b2d42;">Analysis Results From LLM</h3>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+        <h3 style="margin-top: 0; margin-bottom: 12px; color: #2b2d42;">Statistical Analysis Final</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px;">
           <div style="background-color: white; padding: 12px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <div style="font-size: 13px; color: #6c757d; margin-bottom: 4px;">Best Distribution</div>
-            <div style="font-size: 16px; font-weight: 500;">${apiResponse.predicted_distribution || "N/A"}</div>
+            <div style="font-size: 13px; color: #6c757d; margin-bottom: 4px;">Best by AIC</div>
+            <div style="font-size: 16px; font-weight: 500;">${bestAicDist || "N/A"}</div>
+            <div style="font-size: 12px; color: #6c757d;">AIC: ${bestAicValue.toFixed(2)}</div>
           </div>
-          
+          <div style="background-color: white; padding: 12px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <div style="font-size: 13px; color: #6c757d; margin-bottom: 4px;">Best by BIC</div>
+            <div style="font-size: 16px; font-weight: 500;">${bestBicDist || "N/A"}</div>
+            <div style="font-size: 12px; color: #6c757d;">BIC: ${bestBicValue.toFixed(2)}</div>
+          </div>
           ${
-            apiResponse.params
+            bestAicDist === bestBicDist
               ? `
-            <div style="background-color: white; padding: 12px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-              <div style="font-size: 13px; color: #6c757d; margin-bottom: 4px;">Parameters</div>
-              <div style="font-size: 16px; font-weight: 500;">
-                ${Object.entries(apiResponse.params)
-                  .map(([key, value]) => `${key}: ${value !== null && value !== undefined ? (typeof value === "number" ? value.toFixed(4) : value) : "N/A"}`)
-                  .join(", ")}
-              </div>
-            </div>
+          <div style="background-color: #e8f5e9; padding: 12px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <div style="font-size: 13px; color: #2e7d32; margin-bottom: 4px;">Consensus</div>
+            <div style="font-size: 16px; font-weight: 500; color: #2e7d32;">${bestAicDist}</div>
+            <div style="font-size: 12px; color: #2e7d32;">AIC and BIC agree</div>
+          </div>
+          `
+              : `
+          <div style="background-color: #fff3e0; padding: 12px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <div style="font-size: 13px; color: #e65100; margin-bottom: 4px;">Note</div>
+            <div style="font-size: 14px; color: #e65100;">AIC and BIC disagree</div>
+            <div style="font-size: 12px; color: #e65100;">Consider model complexity</div>
+          </div>
+          `
+          }
+        </div>
+        <div style="margin-top: 12px; font-size: 14px; color: #495057;">
+          <p style="margin: 8px 0; font-size: 0.8rem;"><strong>AIC (Akaike Information Criterion):</strong> Favors models with better fit but penalizes complexity (lower is better).</p>
+          <p style="margin: 8px 0; font-size: 0.8rem;"><strong>BIC (Bayesian Information Criterion):</strong> Stronger penalty for complex models, better for larger datasets (lower is better).</p>
+          ${
+            bestAicDist !== bestBicDist
+              ? `
+          <p style="margin: 8px 0; color: #d32f2f;"><strong>Note:</strong> When AIC and BIC disagree, consider BIC for larger datasets as it penalizes complexity more strongly.</p>
           `
               : ""
-          }
-          
-          ${
-            apiResponse.aic !== undefined && apiResponse.aic !== null
-              ? `
-            <div style="background-color: white; padding: 12px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-              <div style="font-size: 13px; color: #6c757d; margin-bottom: 4px;">AIC Score</div>
-              <div style="font-size: 16px; font-weight: 500;">${apiResponse.aic.toFixed(2)}</div>
-            </div>
-          `
-              : `
-            <div style="background-color: white; padding: 12px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-              <div style="font-size: 13px; color: #6c757d; margin-bottom: 4px;">AIC Score</div>
-              <div style="font-size: 16px; font-weight: 500;">N/A</div>
-            </div>
-          `
-          }
-
-          ${
-            apiResponse.bic !== undefined && apiResponse.bic !== null
-              ? `
-          <div style="background-color: white; padding: 12px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <div style="font-size: 13px; color: #6c757d; margin-bottom: 4px;">BIC Score</div>
-            <div style="font-size: 16px; font-weight: 500;">${apiResponse.bic.toFixed(2)}</div>
-          </div>
-        `
-              : `
-          <div style="background-color: white; padding: 12px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <div style="font-size: 13px; color: #6c757d; margin-bottom: 4px;">BIC Score</div>
-            <div style="font-size: 16px; font-weight: 500;">N/A</div>
-          </div>
-        `
           }
         </div>
       </div>
     `;
+    }
 
     estimasiDiv.innerHTML = content;
     estimasiOutput.querySelector(".estimasi-main-container").appendChild(estimasiDiv);

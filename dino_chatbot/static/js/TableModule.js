@@ -1,5 +1,6 @@
-// tableModule.js
+// Inisialisasi tabel dengan data default menggunakan library Handsontable
 export function initializeTable() {
+  // Data awal (default) yang digunakan untuk mengisi tabel, termasuk header
   const defaultData = [
     ["time_to_event", "event_status"], // header
     [13.03, 1],
@@ -41,6 +42,7 @@ export function initializeTable() {
     [5.62, 1],
   ];
 
+  // Mendapatkan elemen DOM tempat tabel akan dirender
   const container = document.getElementById("table-container");
   const hot = new Handsontable(container, {
     data: defaultData,
@@ -60,5 +62,6 @@ export function initializeTable() {
     licenseKey: "non-commercial-and-evaluation",
   });
 
+  // Mengembalikan instance Handsontable
   return hot;
 }

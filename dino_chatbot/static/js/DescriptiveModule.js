@@ -1,61 +1,28 @@
-// descriptiveModule.js
 import { getCookie, toggleContainer, createVariableList } from "./Utils.js";
 
+// Fungsi utama untuk setup analisis deskriptif
 export function setupDescriptiveAnalysis(hot) {
   const descriptiveOutput = document.getElementById("descriptive-output");
 
-  // Add global styles
-  const style = document.createElement("style");
-  style.textContent = `
-    .descriptive-main-container {
-      width: 90%;
-      font-family: Arial, sans-serif;
-    }
-    .stats-container {
-      border-radius: 4px;
-      padding: 15px;
-      margin-bottom: 20px;
-    }
-    .visualization-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      margin-top: 20px;
-    }
-    .visualization-item {
-      background: white;
-      padding: 15px;
-      border-radius: 4px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    .stats-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .fade-out {
-      opacity: 0;
-      transition: opacity 0.3s ease-out;
-    }
-  `;
-  document.head.appendChild(style);
-
+  // Event listener ketika menu "Descriptive" diklik
   document.getElementById("menu-descriptive").addEventListener("click", function () {
     toggleContainer("descriptive-container");
     const headers = hot.getData()[0];
     descriptiveOutput.innerHTML = "";
 
-    // Create main container with 70% width
-    const mainContainer = document.createElement("div");
-    mainContainer.className = "descriptive-main-container";
-    descriptiveOutput.appendChild(mainContainer);
+    // Buat container utama dan tampilkan daftar variabel
+    const container = document.createElement("div");
+    container.className = "descriptive-main-container";
+    descriptiveOutput.appendChild(container);
 
-    displayDescriptiveStatistics(headers, mainContainer);
+    displayDescriptiveStatistics(headers, container);
   });
 
+  // Menampilkan pilihan checkbox untuk setiap variabel
   function displayDescriptiveStatistics(headers, container) {
     const headerContainer = document.createElement("div");
     headerContainer.innerHTML = `
-      <p style="margin: 0 0 20px 0; color: #555; font-size: 0.9rem;">
+      <p class="paragraph">
         Select variables to view detailed statistics and visualizations
       </p>
     `;
@@ -64,6 +31,7 @@ export function setupDescriptiveAnalysis(hot) {
     container.appendChild(createVariableList(headers, handleCheckboxChange));
   }
 
+  // Handler saat checkbox variabel diklik
   function handleCheckboxChange(event) {
     const variableIndex = event.target.dataset.index;
     const variableName = event.target.dataset.variable;
@@ -74,6 +42,7 @@ export function setupDescriptiveAnalysis(hot) {
       return;
     }
 
+    //  Jika dicentang, ambil data dan kirim ke backend
     if (checkbox.checked) {
       checkbox.parentNode.style.opacity = "0.7";
       checkbox.disabled = true;
@@ -82,10 +51,11 @@ export function setupDescriptiveAnalysis(hot) {
       const variableData = allData
         .slice(1)
         .map((row) => row[variableIndex])
-        .filter(Boolean);
+        .filter((val) => val !== "" && val !== null && val !== undefined);
 
       const isNumeric = !isNaN(variableData[0]);
 
+      // Kirim permintaan ke backend
       fetch("/get-statistics/", {
         method: "POST",
         headers: {
@@ -120,10 +90,12 @@ export function setupDescriptiveAnalysis(hot) {
           showErrorNotification(`Failed to load statistics: ${error.message}`);
         });
     } else {
+      // Jika checkbox dibatalkan
       removeStatistics(variableName);
     }
   }
 
+  // Menampilkan statistik dan visualisasi
   function displayStatistics(variableName, stats) {
     removeStatistics(variableName);
 
@@ -131,20 +103,20 @@ export function setupDescriptiveAnalysis(hot) {
     statsContainer.className = "stats-container";
     statsContainer.dataset.variable = variableName;
 
+    // Konten HTML untuk statistik
     statsContainer.innerHTML = `
-    <div style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+    <div class="stats">
       <div>
-        <h3 style="margin: 0; color: #333;">
-          <span style="margin-right: 8px;">📊</span>
+        <h3>
+          <span>📊</span>
           ${variableName}
         </h3>
       </div>
       <div>
-        <button class="download-pdf" style="background: #4CAF50; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 10px; font-size: 0.8rem;">
+        <button class="download-pdf">
           Download PDF
         </button>
-        <button style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #666;" 
-                class="close-stats">×</button>
+        <button class="close-stats">×</button>
       </div>
     </div>
     <div class="stats-content">
@@ -152,6 +124,7 @@ export function setupDescriptiveAnalysis(hot) {
     </div>
   `;
 
+    // Jika ada visualisasi, tampilkan
     if (stats.boxplot || stats.histogram || stats.barchart) {
       const vizGrid = document.createElement("div");
       vizGrid.className = "visualization-grid";
@@ -169,14 +142,14 @@ export function setupDescriptiveAnalysis(hot) {
       statsContainer.querySelector(".stats-content").appendChild(vizGrid);
     }
 
-    // Add event listeners
+    // Event untuk tombol tutup
     statsContainer.querySelector(".close-stats").addEventListener("click", () => {
       removeStatistics(variableName);
       const checkbox = document.querySelector(`input[data-variable="${variableName}"]`);
       if (checkbox) checkbox.checked = false;
     });
 
-    // Add PDF generation handler
+    // Event untuk download PDF
     statsContainer.querySelector(".download-pdf").addEventListener("click", async () => {
       await generatePDF(variableName, statsContainer);
     });
@@ -184,26 +157,27 @@ export function setupDescriptiveAnalysis(hot) {
     descriptiveOutput.querySelector(".descriptive-main-container").appendChild(statsContainer);
   }
 
+  // Buat elemen visualisasi
   function createVisualizationItem(title, imageData) {
     const item = document.createElement("div");
     item.className = "visualization-item";
     item.innerHTML = `
-      <h4 style="margin-top: 0; margin-bottom: 10px; color: #4a4e69; font-size: 1rem;">${title}</h4>
-      <img src="data:image/png;base64,${imageData}" 
-           alt="${title}" 
-           style="width: 100%; height: auto; border-radius: 4px;">
+      <h4 class="tittle-image">${title}</h4>
+      <img class="image-data" src="data:image/png;base64,${imageData}" 
+           alt="${title}">
     `;
     return item;
   }
 
+  // Membangun tabel statistik (numerik atau kategorikal)
   function buildStatisticsTable(variableName, stats) {
     let tableHTML = `
       <div>
-        <table class="stats-table" style="width: 100%; border-collapse: collapse;">
+        <table class="stats-table" style="border-collapse: collapse;">
           <thead>
             <tr>
-              <th style="padding: 8px 12px; text-align: left; border-bottom: 1px solid #ddd; background-color: #f1f1f1; font-weight: 600;">Statistic</th>
-              <th style="padding: 8px 12px; text-align: left; border-bottom: 1px solid #ddd; background-color: #f1f1f1; font-weight: 600;">Value</th>
+              <th>Statistic</th>
+              <th>Value</th>
     `;
 
     if (stats.type === "Numeric") {
@@ -212,58 +186,58 @@ export function setupDescriptiveAnalysis(hot) {
           </thead>
           <tbody>
             <tr>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">Mean</td>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">${formatStatValue(stats.mean)}</td>
+              <td>Mean</td>
+              <td>${formatStatValue(stats.mean)}</td>
             </tr>
             <tr>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">Median</td>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">${formatStatValue(stats.median)}</td>
+              <td>Median</td>
+              <td>${formatStatValue(stats.median)}</td>
             </tr>
             <tr>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">Mode</td>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">${formatStatValue(stats.mode)}</td>
+              <td>Mode</td>
+              <td>${formatStatValue(stats.mode)}</td>
             </tr>
             <tr>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">Standard Deviation</td>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">${formatStatValue(stats.std)}</td>
+              <td>Standard Deviation</td>
+              <td>${formatStatValue(stats.std)}</td>
             </tr>
             <tr>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">Skewness</td>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">${formatStatValue(stats.skewness)}</td>
+              <td>Skewness</td>
+              <td>${formatStatValue(stats.skewness)}</td>
             </tr>
             <tr>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">Kurtosis</td>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">${formatStatValue(stats.kurtosis)}</td>
+              <td>Kurtosis</td>
+              <td>${formatStatValue(stats.kurtosis)}</td>
             </tr>
             <tr>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">Minimum</td>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">${formatStatValue(stats.min)}</td>
+              <td>Minimum</td>
+              <td>${formatStatValue(stats.min)}</td>
             </tr>
             <tr>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">Maximum</td>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">${formatStatValue(stats.max)}</td>
+              <td>Maximum</td>
+              <td>${formatStatValue(stats.max)}</td>
             </tr>
             <tr>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">Sum</td>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">${formatStatValue(stats.sum)}</td>
+              <td>Sum</td>
+              <td>${formatStatValue(stats.sum)}</td>
             </tr>
             <tr>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">Count</td>
-              <td style="padding: 5px 12px; text-align: left; border-bottom: 1px solid #ddd;">${formatStatValue(stats.count)}</td>
+              <td>Count</td>
+              <td>${formatStatValue(stats.count)}</td>
             </tr>
       `;
     } else {
       tableHTML += `
-              <th style="padding: 8px 12px; text-align: left; border-bottom: 1px solid #ddd; background-color: #f1f1f1; font-weight: 600;">Count</th>
-              <th style="padding: 8px 12px; text-align: left; border-bottom: 1px solid #ddd; background-color: #f1f1f1; font-weight: 600;">Percentage</th>
+              <th">Count</th>
+              <th">Percentage</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td style="padding: 8px 12px; text-align: left; border-bottom: 1px solid #ddd;">Unique Values</td>
-              <td style="padding: 8px 12px; text-align: left; border-bottom: 1px solid #ddd;">${formatStatValue(stats.uniqueCount)}</td>
-              <td style="padding: 8px 12px; text-align: left; border-bottom: 1px solid #ddd;"></td>
-              <td style="padding: 8px 12px; text-align: left; border-bottom: 1px solid #ddd;"></td>
+              <td">Unique Values</td>
+              <td">${formatStatValue(stats.uniqueCount)}</td>
+              <td"></td>
+              <td"></td>
             </tr>
       `;
 
@@ -272,9 +246,9 @@ export function setupDescriptiveAnalysis(hot) {
         const percentage = ((count / total) * 100).toFixed(1);
         tableHTML += `
           <tr>
-            <td style="padding: 8px 12px; text-align: left; border-bottom: 1px solid #ddd;">${category}</td>
-            <td style="padding: 8px 12px; text-align: left; border-bottom: 1px solid #ddd;">${count}</td>
-            <td style="padding: 8px 12px; text-align: left; border-bottom: 1px solid #ddd;">${percentage}%</td>
+            <td">${category}</td>
+            <td">${count}</td>
+            <td">${percentage}%</td>
           </tr>
         `;
       }
@@ -289,6 +263,7 @@ export function setupDescriptiveAnalysis(hot) {
     return tableHTML;
   }
 
+  // Format nilai statistik agar lebih rapi
   function formatStatValue(value) {
     if (value === null || value === undefined) return "N/A";
     if (typeof value === "number") {
@@ -298,6 +273,7 @@ export function setupDescriptiveAnalysis(hot) {
     return value;
   }
 
+  // Menghapus statistik tertentu dari tampilan
   function removeStatistics(variableName) {
     const statsItem = descriptiveOutput.querySelector(`.stats-container[data-variable="${variableName}"]`);
     if (statsItem) {
@@ -306,6 +282,7 @@ export function setupDescriptiveAnalysis(hot) {
     }
   }
 
+  // Menampilkan notifikasi kesalahan
   function showErrorNotification(message) {
     const notification = document.createElement("div");
     notification.style.cssText = `
@@ -337,74 +314,91 @@ export function setupDescriptiveAnalysis(hot) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    // Add title
+    // Fungsi untuk menambahkan halaman baru dan reset posisi Y
+    function addNewPage() {
+      doc.addPage();
+      return 15; // posisi Y awal untuk halaman baru
+    }
+
+    // Tambahkan judul dan tanggal
     doc.setFontSize(16);
     doc.setTextColor(40);
     doc.text(`Descriptive Analysis: ${variableName}`, 15, 15);
 
-    // Add date
     doc.setFontSize(10);
     doc.setTextColor(100);
-    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 15, 22);
+    const generatedDate = new Date().toLocaleString(undefined, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    doc.text(`Generated on: ${generatedDate}`, 15, 22);
 
-    // Convert stats table to PDF
+    // Tambahkan tabel statistik
     const table = container.querySelector(".stats-table");
+    let yPosition = 30;
     if (table) {
       doc.autoTable({
         html: table,
-        startY: 30,
+        startY: yPosition,
         styles: { fontSize: 8 },
         headStyles: { fillColor: [241, 241, 241] },
         columnStyles: {
           0: { cellWidth: "auto" },
           1: { cellWidth: "auto" },
+          2: { cellWidth: "auto" },
+        },
+        didDrawPage: (data) => {
+          yPosition = data.cursor.y + 10; // update posisi y setelah tabel
         },
       });
     }
 
-    // Add visualizations
+    // Tambahkan visualisasi (gambar)
     const visualizations = container.querySelectorAll(".visualization-item");
-    let yPosition = doc.lastAutoTable?.finalY + 10 || 30;
 
     for (const viz of visualizations) {
-      // Add new page if needed
       if (yPosition > 250) {
-        doc.addPage();
-        yPosition = 15;
+        yPosition = addNewPage();
       }
 
-      const title = viz.querySelector("h4").textContent;
+      const title = viz.querySelector("h4")?.textContent || "Visualization";
       const imgElement = viz.querySelector("img");
 
-      // Add visualization title
       doc.setFontSize(12);
       doc.setTextColor(40);
       doc.text(title, 15, yPosition);
       yPosition += 7;
 
-      // Add visualization image
       if (imgElement) {
         try {
-          const canvas = await html2canvas(imgElement);
+          // Konversi gambar ke canvas via html2canvas
+          const canvas = await html2canvas(imgElement, { backgroundColor: null });
           const imgData = canvas.toDataURL("image/png");
-          const imgWidth = 180;
-          const imgHeight = (canvas.height / canvas.width) * imgWidth;
 
-          // Adjust position if image would go off page
+          const maxWidth = 180;
+          const scale = maxWidth / canvas.width;
+          const imgWidth = maxWidth;
+          const imgHeight = canvas.height * scale;
+
+          // Jika gambar tidak muat di halaman, tambah halaman baru
           if (yPosition + imgHeight > 280) {
-            doc.addPage();
-            yPosition = 15;
+            yPosition = addNewPage();
           }
 
           doc.addImage(imgData, "PNG", 15, yPosition, imgWidth, imgHeight);
-          yPosition += imgHeight + 15;
+          yPosition += imgHeight + 15; // beri jarak bawah gambar
         } catch (error) {
           console.error("Error converting visualization to image:", error);
+          // Opsional: bisa tampilkan notif kesalahan ke user di UI
         }
       }
     }
 
-    // Save the PDF
-    doc.save(`analysis_${variableName.replace(/\s+/g, "_")}.pdf`);
+    // Save file PDF dengan nama yang aman untuk filesystem
+    const safeName = variableName.replace(/\s+/g, "_").replace(/[^\w-]/g, "");
+    doc.save(`analysis_${safeName}.pdf`);
   }
 }

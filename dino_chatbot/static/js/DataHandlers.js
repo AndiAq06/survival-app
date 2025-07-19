@@ -1,11 +1,10 @@
-// dataHandlers.js
 export function setupDataHandlers(hot) {
-  // Clear data handler
+  // Handler untuk menu "Clear Data"
   document.getElementById("clear-data").addEventListener("click", function (event) {
     event.preventDefault();
     event.stopImmediatePropagation();
 
-    // Check if table is empty
+    // Ambil data dari tabel dan periksa apakah seluruh sel kosong
     const data = hot.getData();
     let isEmpty = true;
 
@@ -16,6 +15,7 @@ export function setupDataHandlers(hot) {
       }
     }
 
+    // Jika data kosong, tampilkan notifikasi informasi
     if (isEmpty) {
       Swal.fire({
         title: "No Data to Clear!",
@@ -27,6 +27,7 @@ export function setupDataHandlers(hot) {
       return;
     }
 
+    // Jika ada data, tampilkan konfirmasi sebelum menghapus
     const originalConfirm = window.confirm;
     window.confirm = () => true;
 
@@ -43,18 +44,18 @@ export function setupDataHandlers(hot) {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        // Clear data
         const newData = [];
         const colCount = hot.countCols();
 
-        for (let i = 0; i < hot.countRows(); i++) {
+        for (let i = 0; i < 10; i++) {
           newData.push(Array(colCount).fill(""));
         }
 
+        // Muat data kosong ke Handsontable dan render ulang
         hot.loadData(newData);
         hot.render();
 
-        // Success notification
+        // Tampilkan notifikasi sukses
         Swal.fire({
           title: "Cleared!",
           text: "All data has been cleared successfully",
@@ -67,14 +68,13 @@ export function setupDataHandlers(hot) {
     });
   });
 
-  // Export data handler
+  // Handler untuk menu "Export Data"
   document.getElementById("export-data").addEventListener("click", function (event) {
     event.preventDefault();
 
-    // Get data from handsontable
+    // Ambil data dari tabel dan periksa apakah kosong
     const data = hot.getData();
 
-    // Check if data is empty
     let isEmpty = true;
     for (let row of data) {
       if (row.some((cell) => cell !== null && cell !== "" && cell !== undefined)) {
@@ -83,8 +83,8 @@ export function setupDataHandlers(hot) {
       }
     }
 
+    // Jika kosong, tampilkan notifikasi peringatan
     if (isEmpty) {
-      // Show warning if data is empty
       Swal.fire({
         title: "No Data to Export!",
         text: "The table is empty. Please add some data before exporting.",
@@ -96,13 +96,13 @@ export function setupDataHandlers(hot) {
       return;
     }
 
-    // Proceed with export if data exists
+    // Ekspor data ke file Excel
     const ws = XLSX.utils.aoa_to_sheet(data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
     XLSX.writeFile(wb, "data.xlsx");
 
-    // Success notification
+    // Tampilkan notifikasi sukses
     Swal.fire({
       title: "Export Successful!",
       text: "Your data has been downloaded as 'data.xlsx'",
@@ -113,11 +113,12 @@ export function setupDataHandlers(hot) {
     });
   });
 
+  // Handler untuk menu "Import Data"
   document.getElementById("import-data").addEventListener("change", function (event) {
     const file = event.target.files[0];
     if (!file) return;
 
-    // Tampilkan loading
+    // Tampilkan notifikasi loading saat proses pembacaan file
     Swal.fire({
       title: "Processing File...",
       html: `Reading <b>${file.name}</b>`,
@@ -127,6 +128,7 @@ export function setupDataHandlers(hot) {
       },
     });
 
+    // Ketika file berhasil dibaca
     const reader = new FileReader();
     reader.onload = function (e) {
       const data = new Uint8Array(e.target.result);
@@ -135,9 +137,10 @@ export function setupDataHandlers(hot) {
       const worksheet = workbook.Sheets[firstSheetName];
       const importedData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
+      // Tampilkan data ke tabel
       hot.loadData(importedData);
 
-      // Notifikasi sukses
+      // Tampilkan notifikasi sukses
       Swal.fire({
         title: "Import Successful!",
         text: `Data from ${file.name} has been loaded.`,
@@ -147,6 +150,7 @@ export function setupDataHandlers(hot) {
       });
     };
 
+    // Jika terjadi error saat membaca file
     reader.onerror = () => {
       Swal.fire({
         title: "Error!",
