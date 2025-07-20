@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['survival-app-main-e8eccdc.kuberns.cloud']
+ALLOWED_HOSTS = ['survival-app-production.up.railway.app']
 
 # Load OpenAI API Key
 OPENAI_API_KEY = config('OPENAI_API_KEY')
@@ -129,7 +129,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-# STATICFILES_DIRS = []
+STATICFILES_DIRS = []
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
